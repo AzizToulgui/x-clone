@@ -18,13 +18,13 @@ const Share = () => {
 
     });
 
+
     const handelMediaChange = (e : React.ChangeEvent<HTMLInputElement>) => {
       if(e.target.files && e.target.files[0]) {
           setMedia(e.target.files[0]);
       }
     };
     const previewURL = media ? URL.createObjectURL(media) : null;
-
 
     return (
         <form className="p-4 flex gap-4" action={(formData)=>shareAction(formData, settings)}>
@@ -38,8 +38,7 @@ const Share = () => {
                  name="desc"
                 />
                 {/*Preview Image*/}
-                {
-                    previewURL && <div className="relative rounded-xl overflow-hidden">
+                {media?.type.includes("image") && previewURL && <div className="relative rounded-xl overflow-hidden">
                         <NextImage src={previewURL} alt="" width={600} height={600} className={`w-full ${
                             settings.type === "original"
                                 ? "h-full object-contain"
@@ -48,8 +47,17 @@ const Share = () => {
                                     : "aspect-video object-cover"
                         }`}/>
                         <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white py-1 px-4 rounded-full font-bold test-sm cursor-pointer" onClick={()=> setIsEditorOpen(true)}>Edit</div>
-                    </div>
-                }
+                        <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white h-8 w-8 flex items-center justify-center rounded-full cursor-pointer " onClick={()=>setMedia(null)}>X</div>
+                        </div>
+
+
+                }{media?.type.includes("video") && previewURL && (
+                <div className="relative">
+                    <video src={previewURL} controls />
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white h-8 w-8 flex items-center justify-center rounded-full cursor-pointer " onClick={()=>setMedia(null)}>X</div>
+                </div>
+            )
+                 }
                 {isEditorOPen && previewURL && (
                     <ImageEditor onClose={()=> setIsEditorOpen(false)}
                                  previewURL={previewURL}
@@ -58,7 +66,8 @@ const Share = () => {
                     />)}
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                     <div className="flex gap-4 flex-wrap">
-                        <input type="file" onChange={handelMediaChange} className="hidden" id="file" name="file"/>
+                        <input type="file" onChange={handelMediaChange} className="hidden" id="file" name="file"
+                               accept="image/*,video/*"/>
                         <label htmlFor="file">
                         <Image path="icons/image.svg" alt={""} w={20} h={20} className="cursor-pointer"/>
                         </label>
