@@ -3,6 +3,7 @@ import Image from "@/components/Image";
 import PostInfo from "@/components/PostInfo";
 import PostInteractions from "@/components/PostInteractions";
 import {imagekit} from "@/utils";
+import Video from "@/components/Video";
 
 interface FileDetailsResponse {
     width : number;
@@ -23,8 +24,8 @@ const Post = async () => {
         });
     };
 
-    const fileDetails = await getFileDetails("67c0431e432c476416681fce");
-    console.log(fileDetails);
+    const fileDetails = await getFileDetails("67c05a02432c476416f2c136");
+    //console.log(fileDetails);
     return (
         <div className="p-4 border-y-[1px] border-borderGray">
             {/*Post Type*/}
@@ -64,7 +65,18 @@ const Post = async () => {
 {/*
                     <Image path="general/post.jpeg" alt={""} w={600} h={600} />
 */}
-                    {fileDetails && (<Image path={fileDetails.filePath} alt={""} w={fileDetails.width} h={fileDetails.width} className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}/>)}
+                    {fileDetails && fileDetails.type === 'image' ? (
+                        <Image
+                            path={fileDetails.filePath}
+                            alt={""}
+                            w={fileDetails.width}
+                            h={fileDetails.width}
+                            className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
+                         />
+                    ) : <Video
+                        path={fileDetails.filePath}
+                        className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
+                        />}
                     <PostInteractions/>
                 </div>
             </div>
